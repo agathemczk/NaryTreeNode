@@ -126,10 +126,14 @@ public class NaryTreeNode<E> {
     @Override
     public String toString() {
         if (this.isLeaf()) {
-            return VALUE_PREFIX + (this.value == null ? VALUE_NULL : this.value.toString()) + VALUE_SUFFIX;
+            return NaryTreeNode.VALUE_PREFIX + (this.value == null ? NaryTreeNode.VALUE_NULL : this.value.toString()) +
+                    NaryTreeNode.VALUE_SUFFIX;
         }
-        return VALUE_PREFIX +  (this.value == null ? VALUE_NULL : this.value.toString()) + VALUE_SUFFIX + VALUE_SEPARATOR
-                + this.children.stream().map(NaryTreeNode::toString).collect(Collectors.joining(CHILDREN_SEPARATOR, CHILDREN_PREFIX, CHILDREN_SUFFIX));
+        return NaryTreeNode.VALUE_PREFIX +  (this.value == null ? NaryTreeNode.VALUE_NULL : this.value.toString()) +
+                NaryTreeNode.VALUE_SUFFIX + NaryTreeNode.VALUE_SEPARATOR
+                + this.children.stream().map(NaryTreeNode::toString).collect(Collectors.joining(
+                NaryTreeNode.CHILDREN_SEPARATOR,
+                NaryTreeNode.CHILDREN_PREFIX, NaryTreeNode.CHILDREN_SUFFIX));
     }
 
     /**
@@ -138,11 +142,11 @@ public class NaryTreeNode<E> {
      * @param value the value
      * @return the boolean
      */
-    public boolean contains(E value) {
+    public boolean contains(final E value) {
         if (this.value.equals(value)) {
             return true;
         }
-        for (NaryTreeNode<E> child : this.children) {
+        for (final NaryTreeNode<E> child : this.children) {
             if (child.contains(value)) {
                 return true;
             }
