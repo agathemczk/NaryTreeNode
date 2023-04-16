@@ -234,10 +234,10 @@ public class NaryTreeNode<E> {
                 this.children.stream().map(n -> n.toPrettyText(1)).collect(Collectors.joining("")));
     }
 
-    private String toPrettyText(int depth) {
+    private String toPrettyText(final int depth) {
         return MessageFormat.format("{0}{1}{2}\n{3}",
-                VALUE_PRETTY_DEPTH.repeat(depth - 1),
-                VALUE_PRETTY_CHILDREN_PREFIX,
+                NaryTreeNode.VALUE_PRETTY_DEPTH.repeat(depth - 1),
+                NaryTreeNode.VALUE_PRETTY_CHILDREN_PREFIX,
                 this.value.toString(),
                 this.children.stream().map(n -> n.toPrettyText(depth + 1)).collect(Collectors.joining("")));
     }
@@ -245,8 +245,8 @@ public class NaryTreeNode<E> {
     @Override
     public String toString() {
         return "NaryTreeNode{" +
-                "value=" + value.toString() +
-                ", children=" + children.toString() +
+                "value=" + this.value.toString() +
+                ", children=" + this.children.toString() +
                 '}';
     }
 }
