@@ -2,6 +2,7 @@ package com.jad.treenode;
 
 import com.google.gson.Gson;
 
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,9 +21,11 @@ public class NaryTreeNode<E> {
     private static final String VALUE_PREFIX = "[";
     private static final String VALUE_SUFFIX = "]";
     private static final String VALUE_NULL = "null";
+    private static final String VALUE_PRETTY_DEPTH = "  ";
+    private static final String VALUE_PRETTY_CHILDREN_PREFIX = "|-";
+    private final LinkedList<NaryTreeNode<E>> children;
 
     private E value;
-    private final LinkedList<NaryTreeNode<E>> children;
 
     /**
      * Instantiates a new Nary tree node.
@@ -123,15 +126,19 @@ public class NaryTreeNode<E> {
         return this.children.isEmpty();
     }
 
-    @Override
-    public String toString() {
+    /**
+     * Generate text string.
+     *
+     * @return the string
+     */
+    public String generateText() {
         if (this.isLeaf()) {
             return NaryTreeNode.VALUE_PREFIX + (this.value == null ? NaryTreeNode.VALUE_NULL : this.value.toString()) +
                     NaryTreeNode.VALUE_SUFFIX;
         }
-        return NaryTreeNode.VALUE_PREFIX +  (this.value == null ? NaryTreeNode.VALUE_NULL : this.value.toString()) +
+        return NaryTreeNode.VALUE_PREFIX + (this.value == null ? NaryTreeNode.VALUE_NULL : this.value.toString()) +
                 NaryTreeNode.VALUE_SUFFIX + NaryTreeNode.VALUE_SEPARATOR
-                + this.children.stream().map(NaryTreeNode::toString).collect(Collectors.joining(
+                + this.children.stream().map(NaryTreeNode::generateText).collect(Collectors.joining(
                 NaryTreeNode.CHILDREN_SEPARATOR,
                 NaryTreeNode.CHILDREN_PREFIX, NaryTreeNode.CHILDREN_SUFFIX));
     }
@@ -160,12 +167,10 @@ public class NaryTreeNode<E> {
      * @return the height
      */
     public int getHeight() {
-        if (this.isLeaf()) {
+        if (this.isLeaf() || this.children.isEmpty()) {
             return 1;
         }
-        return 1 + this.children.stream().mapToInt(NaryTreeNode::getHeight).max()
-                .getAsInt();
-//                .orElse();
+        return 1 + this.children.stream().mapToInt(NaryTreeNode::getHeight).max().getAsInt();
     }
 
     /**
@@ -204,6 +209,11 @@ public class NaryTreeNode<E> {
         return 1 + this.children.stream().mapToInt(NaryTreeNode::getNumberOfNodes).sum();
     }
 
+    /**
+     * To json string.
+     *
+     * @return the string
+     */
     public String toJson() {
         if (this.isLeaf()) {
             return "{\"value\":" + new Gson().toJson(this.value) + "}";
@@ -212,7 +222,31 @@ public class NaryTreeNode<E> {
                 this.children.stream().map(NaryTreeNode::toJson).collect(Collectors.joining(",")) + "]}";
     }
 
-    public String toPrettyString() {
-        return new Gson().toJson(this);
+
+    /**
+     * To pretty text string.
+     *
+     * @return the string
+     */
+    public String toPrettyText() {
+        return MessageFormat.format("{0}\n{1}",
+                this.value.toString(),
+                this.children.stream().map(n -> n.toPrettyText(1)).collect(Collectors.joining("")));
+    }
+
+    private String toPrettyText(int depth) {
+        return MessageFormat.format("{0}{1}{2}\n{3}",
+                VALUE_PRETTY_DEPTH.repeat(depth - 1),
+                VALUE_PRETTY_CHILDREN_PREFIX,
+                this.value.toString(),
+                this.children.stream().map(n -> n.toPrettyText(depth + 1)).collect(Collectors.joining("")));
+    }
+
+    @Override
+    public String toString() {
+        return "NaryTreeNode{" +
+                "value=" + value.toString() +
+                ", children=" + children.toString() +
+                '}';
     }
 }

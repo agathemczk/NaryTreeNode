@@ -72,14 +72,9 @@ public class NaryTreeNodeTest {
         final NaryTreeNode<String> treeNode = new NaryTreeNode<>();
         final NaryTreeNode<String> child = new NaryTreeNode<>();
         treeNode.addChild(child);
+        assertEquals(1, treeNode.getChildrenCount());
         treeNode.removeChild(0);
         assertEquals(0, treeNode.getChildrenCount());
-    }
-
-    @Test
-    public void removeChild2() {
-        final NaryTreeNode<String> treeNode = new NaryTreeNode<>();
-        final NaryTreeNode<String> child = new NaryTreeNode<>();
         treeNode.addChild(child);
         treeNode.removeChild(child);
         assertEquals(0, treeNode.getChildrenCount());
@@ -96,7 +91,7 @@ public class NaryTreeNodeTest {
     }
 
     @Test
-    public void toStringTest() {
+    public void generateText() {
         final int nbChildren = 10;
         final NaryTreeNode<String> treeNode = new NaryTreeNode<>("root");
         final NaryTreeNode<String> child1 = new NaryTreeNode<>("child 1");
@@ -111,7 +106,7 @@ public class NaryTreeNodeTest {
         }
         assertEquals(
                 "[root] ([child 1] ([0], [1], [2], [3], [4], [5], [6], [7], [8], [9], [child 1] ([0], [1], [2], [3], [4], [5], [6], [7], [8], [9])))",
-                treeNode.toString());
+                treeNode.generateText());
     }
 
     @Test
@@ -176,5 +171,77 @@ public class NaryTreeNodeTest {
         assertEquals(
                 "{\"value\":\"root\",\"children\":[{\"value\":\"child\",\"children\":[{\"value\":\"subChild\"}]}]}",
                 treeNode.toJson());
+    }
+
+    @Test
+    public void testToString() {
+        final NaryTreeNode<String> treeNode = new NaryTreeNode<>("root");
+        final NaryTreeNode<String> child = new NaryTreeNode<>("child");
+        final NaryTreeNode<String> subChild = new NaryTreeNode<>("subChild");
+        assertEquals("NaryTreeNode{value=root, children=[]}", treeNode.toString());
+        treeNode.addChild(child);
+        assertEquals("NaryTreeNode{value=root, children=[NaryTreeNode{value=child, children=[]}]}", treeNode.toString());
+        child.addChild(subChild);
+        assertEquals("NaryTreeNode{value=root, children=[NaryTreeNode{value=child, children=[NaryTreeNode{value=subChild, children=[]}]}]}", treeNode.toString());
+    }
+
+    @Test
+    public void toPrettyText() {
+        final NaryTreeNode<String> treeNode = new NaryTreeNode<>("root");
+        final NaryTreeNode<String> child1 = new NaryTreeNode<>("child1");
+        final NaryTreeNode<String> child2 = new NaryTreeNode<>("child2");
+        final NaryTreeNode<String> child3 = new NaryTreeNode<>("child3");
+        final NaryTreeNode<String> subChild11 = new NaryTreeNode<>("subChild11");
+        final NaryTreeNode<String> subChild12 = new NaryTreeNode<>("subChild12");
+        final NaryTreeNode<String> subChild21 = new NaryTreeNode<>("subChild21");
+        final NaryTreeNode<String> subChild22 = new NaryTreeNode<>("subChild22");
+        final NaryTreeNode<String> subSubChild211 = new NaryTreeNode<>("subSubChild211");
+        assertEquals("""
+                root
+                 """, treeNode.toPrettyText());
+        treeNode.addChild(child1);
+        assertEquals("""
+                root
+                |-child1
+                 """, treeNode.toPrettyText());
+        treeNode.addChild(child2);
+        assertEquals("""
+                root
+                |-child1
+                |-child2
+                 """, treeNode.toPrettyText());
+        child1.addChild(subChild11);
+        child1.addChild(subChild12);
+        assertEquals("""
+                root
+                |-child1
+                  |-subChild11
+                  |-subChild12
+                |-child2
+                                 """, treeNode.toPrettyText());
+        child2.addChild(subChild21);
+        child2.addChild(subChild22);
+        assertEquals("""
+                root
+                |-child1
+                  |-subChild11
+                  |-subChild12
+                |-child2
+                  |-subChild21
+                  |-subChild22
+                 """, treeNode.toPrettyText());
+        subChild21.addChild(subSubChild211);
+        treeNode.addChild(child3);
+        assertEquals("""
+                root
+                |-child1
+                  |-subChild11
+                  |-subChild12
+                |-child2
+                  |-subChild21
+                    |-subSubChild211
+                  |-subChild22
+                |-child3
+                """, treeNode.toPrettyText());
     }
 }
