@@ -66,6 +66,7 @@ public class NaryTreeNode<E> {
      * Gets child.
      *
      * @param index the index
+     *
      * @return the child
      */
     public NaryTreeNode<E> getChild(final int index) {
@@ -88,6 +89,15 @@ public class NaryTreeNode<E> {
      */
     public void addChild(final NaryTreeNode<E> child) {
         this.children.add(child);
+    }
+
+    /**
+     * Add child.
+     *
+     * @param childValue the child value
+     */
+    public void addChild(final E childValue) {
+        this.addChild(new NaryTreeNode<>(childValue));
     }
 
     /**
@@ -147,6 +157,7 @@ public class NaryTreeNode<E> {
      * Contains boolean.
      *
      * @param value the value
+     *
      * @return the boolean
      */
     public boolean contains(final E value) {
