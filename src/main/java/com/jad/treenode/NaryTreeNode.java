@@ -233,7 +233,6 @@ public class NaryTreeNode<E> {
                 this.children.stream().map(NaryTreeNode::toJson).collect(Collectors.joining(",")) + "]}";
     }
 
-
     /**
      * To pretty text string.
      *
@@ -259,5 +258,50 @@ public class NaryTreeNode<E> {
                 "value=" + this.value.toString() +
                 ", children=" + this.children.toString() +
                 '}';
+    }
+
+    /**
+     * Return a postfix list of all values.
+     *
+     * @return the list
+     */
+    public List<E> toPostfixList() {
+        List<E> list = new LinkedList<>();
+        for (NaryTreeNode<E> child : this.children) {
+            list.addAll(child.toPostfixList());
+        }
+        list.add(this.value);
+        return list;
+    }
+
+    /**
+     * Return a prefix list of all values.
+     *
+     * @return the list
+     */
+    public List<E> toPrefixList() {
+        List<E> list = new LinkedList<>();
+        list.add(this.value);
+        for (NaryTreeNode<E> child : this.children) {
+            list.addAll(child.toPrefixList());
+        }
+        return list;
+    }
+
+    /**
+     * Return a read by width list of all values.
+     *
+     * @return the list
+     */
+    public List<E> toByWidthList() {
+        List<E> list = new LinkedList<>();
+        LinkedList<NaryTreeNode<E>> queue = new LinkedList<>();
+        queue.add(this);
+        while (!queue.isEmpty()) {
+            NaryTreeNode<E> node = queue.poll();
+            list.add(node.value);
+            queue.addAll(node.children);
+        }
+        return list;
     }
 }
