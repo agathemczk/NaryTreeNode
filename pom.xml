@@ -6,7 +6,7 @@
 
     <groupId>com.jad</groupId>
     <artifactId>treenode</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <name>TreeNode</name>
     <description>A package to use nary tree node structure.</description>
     <properties>
@@ -35,9 +35,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>3.7.0</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
