@@ -6,12 +6,12 @@
 
     <groupId>com.jad</groupId>
     <artifactId>treenode</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.6</version>
     <name>TreeNode</name>
     <description>A package to use nary tree node structure.</description>
     <properties>
-        <maven.compiler.source>19</maven.compiler.source>
-        <maven.compiler.target>19</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.10.3</junit.version>
     </properties>
