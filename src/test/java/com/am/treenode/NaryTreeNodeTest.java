@@ -340,4 +340,47 @@ public class NaryTreeNodeTest {
         List<String> byWidthListExpected = List.of("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M");
         assertEquals(byWidthListExpected, a.toByWidthList());
     }
+
+    @Test
+    void getNodeFromElement() {
+        final NaryTreeNode<String> a = new NaryTreeNode<>("A");
+        final NaryTreeNode<String> b = new NaryTreeNode<>("B");
+        final NaryTreeNode<String> c = new NaryTreeNode<>("C");
+        final NaryTreeNode<String> d = new NaryTreeNode<>("D");
+        final NaryTreeNode<String> e = new NaryTreeNode<>("E");
+        final NaryTreeNode<String> f = new NaryTreeNode<>("F");
+        final NaryTreeNode<String> g = new NaryTreeNode<>("G");
+        final NaryTreeNode<String> h = new NaryTreeNode<>("H");
+        final NaryTreeNode<String> i = new NaryTreeNode<>("I");
+        final NaryTreeNode<String> j = new NaryTreeNode<>("J");
+        final NaryTreeNode<String> k = new NaryTreeNode<>("K");
+        final NaryTreeNode<String> l = new NaryTreeNode<>("L");
+        final NaryTreeNode<String> m = new NaryTreeNode<>("M");
+
+        a.addChild(b);
+        a.addChild(c);
+        b.addChild(d);
+        b.addChild(e);
+        b.addChild(f);
+        b.addChild(g);
+        c.addChild(h);
+        c.addChild(i);
+        c.addChild(j);
+        d.addChild(k);
+        d.addChild(l);
+        d.addChild(m);
+        assertEquals(a, a.getNodeFromElement("A"));
+        assertEquals(b, a.getNodeFromElement("B"));
+        assertEquals(c, a.getNodeFromElement("C"));
+        assertEquals(d, a.getNodeFromElement("D"));
+        assertEquals(e, a.getNodeFromElement("E"));
+        assertEquals(f, a.getNodeFromElement("F"));
+        assertEquals(g, a.getNodeFromElement("G"));
+        assertEquals(h, a.getNodeFromElement("H"));
+        assertEquals(i, a.getNodeFromElement("I"));
+        assertEquals(j, a.getNodeFromElement("J"));
+        assertEquals(k, a.getNodeFromElement("K"));
+        assertEquals(l, a.getNodeFromElement("L"));
+        assertEquals(m, a.getNodeFromElement("M"));
+    }
 }

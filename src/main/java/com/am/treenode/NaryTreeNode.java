@@ -66,7 +66,6 @@ public class NaryTreeNode<E> {
      * Gets child.
      *
      * @param index the index
-     *
      * @return the child
      */
     public NaryTreeNode<E> getChild(final int index) {
@@ -157,7 +156,6 @@ public class NaryTreeNode<E> {
      * Contains boolean.
      *
      * @param value the value
-     *
      * @return the boolean
      */
     public boolean contains(final E value) {
@@ -303,5 +301,24 @@ public class NaryTreeNode<E> {
             queue.addAll(node.children);
         }
         return list;
+    }
+
+
+    /**
+     * Gets node from element.
+     *
+     * @param element the element
+     *
+     * @return the node witch has element as value
+     */
+
+    public final NaryTreeNode<E> getNodeFromElement(final E element) {
+        if (this.value == element) return this;
+        NaryTreeNode<E> result = null;
+        for (NaryTreeNode<E> child : this.children){
+            NaryTreeNode<E> response = child.getNodeFromElement(element);
+            result = (response == null) ? result : response;
+        }
+        return result;
     }
 }
