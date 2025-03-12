@@ -1,4 +1,4 @@
-package com.jad.treenode;
+package com.am.treenode;
 
 import org.junit.jupiter.api.Test;
 
@@ -202,46 +202,46 @@ public class NaryTreeNodeTest {
         treeNode.addChild(child1);
         assertEquals("""
                 root
-                |-child1
+                ├─child1
                  """, treeNode.toPrettyText());
         treeNode.addChild(child2);
         assertEquals("""
                 root
-                |-child1
-                |-child2
+                ├─child1
+                ├─child2
                  """, treeNode.toPrettyText());
         child1.addChild(subChild11);
         child1.addChild(subChild12);
         assertEquals("""
                 root
-                |-child1
-                  |-subChild11
-                  |-subChild12
-                |-child2
+                ├─child1
+                │ ├─subChild11
+                │ ├─subChild12
+                ├─child2
                                  """, treeNode.toPrettyText());
         child2.addChild(subChild21);
         child2.addChild(subChild22);
         assertEquals("""
                 root
-                |-child1
-                  |-subChild11
-                  |-subChild12
-                |-child2
-                  |-subChild21
-                  |-subChild22
+                ├─child1
+                │ ├─subChild11
+                │ ├─subChild12
+                ├─child2
+                │ ├─subChild21
+                │ ├─subChild22
                  """, treeNode.toPrettyText());
         subChild21.addChild(subSubChild211);
         treeNode.addChild(child3);
         assertEquals("""
                 root
-                |-child1
-                  |-subChild11
-                  |-subChild12
-                |-child2
-                  |-subChild21
-                    |-subSubChild211
-                  |-subChild22
-                |-child3
+                ├─child1
+                │ ├─subChild11
+                │ ├─subChild12
+                ├─child2
+                │ ├─subChild21
+                │ │ ├─subSubChild211
+                │ ├─subChild22
+                ├─child3
                 """, treeNode.toPrettyText());
     }
 

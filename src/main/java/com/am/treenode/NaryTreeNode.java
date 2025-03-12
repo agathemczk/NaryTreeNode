@@ -1,4 +1,4 @@
-package com.jad.treenode;
+package com.am.treenode;
 
 import com.google.gson.Gson;
 
@@ -21,8 +21,8 @@ public class NaryTreeNode<E> {
     private static final String VALUE_PREFIX = "[";
     private static final String VALUE_SUFFIX = "]";
     private static final String VALUE_NULL = "null";
-    private static final String VALUE_PRETTY_DEPTH = "  ";
-    private static final String VALUE_PRETTY_CHILDREN_PREFIX = "|-";
+    private static final String VALUE_PRETTY_DEPTH = "│ ";
+    private static final String VALUE_PRETTY_CHILDREN_PREFIX = "├─";
     private final LinkedList<NaryTreeNode<E>> children;
 
     private E value;
