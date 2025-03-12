@@ -5,7 +5,7 @@
 
     <groupId>com.am</groupId>
     <artifactId>treenode</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.11</version>
     <name>TreeNode</name>
     <description>A package to use nary tree node structure.</description>
     <properties>
