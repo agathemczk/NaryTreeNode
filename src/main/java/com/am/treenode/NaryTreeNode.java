@@ -1,9 +1,12 @@
 package com.am.treenode;
 
 import com.google.gson.Gson;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.text.MessageFormat;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,241 +16,66 @@ import java.util.stream.Collectors;
  *
  * @param <E> the type parameter
  */
-public class NaryTreeNode<E> {
-    private static final String CHILDREN_SEPARATOR = ", ";
-    private static final String CHILDREN_PREFIX = "(";
-    private static final String CHILDREN_SUFFIX = ")";
-    private static final String VALUE_SEPARATOR = " ";
-    private static final String VALUE_PREFIX = "[";
-    private static final String VALUE_SUFFIX = "]";
-    private static final String VALUE_NULL = "null";
-    private static final String VALUE_PRETTY_DEPTH = "│ ";
-    private static final String VALUE_PRETTY_CHILDREN_PREFIX = "├─";
-    private final LinkedList<NaryTreeNode<E>> children;
+class NaryTreeNode<E> implements INaryTreeNode<E> {
+    private final List<INaryTreeNode<E>> children;
 
+    @Setter
+    @Getter
     private E value;
 
     /**
-     * Instantiates a new Nary tree node.
-     *
-     * @param value the value
-     */
-    public NaryTreeNode(final E value) {
-        this.value = value;
-        this.children = new LinkedList<>();
-    }
-
-    /**
-     * Instantiates a new Nary tree node.
+     * Instantiates a new NaryTreeNode.
      */
     public NaryTreeNode() {
         this(null);
     }
 
     /**
-     * Gets value.
+     * Instantiates a new NaryTreeNode with a value.
      *
-     * @return the value
+     * @param element - the value of the node
      */
-    public E getValue() {
-        return this.value;
+    public NaryTreeNode(final E element) {
+        this.value = element;
+        this.children = new LinkedList<>();
     }
 
-    /**
-     * Sets value.
-     *
-     * @param value the value
-     */
-    public void setValue(final E value) {
-        this.value = value;
+    private static <E> String toPrettyText(final INaryTreeNode<E> node, final int depth) {
+        return MessageFormat.format("{0}{1}{2}\n{3}",
+                NaryTreeNodeUtils.VALUE_PRETTY_DEPTH.repeat(depth - 1),
+                NaryTreeNodeUtils.VALUE_PRETTY_CHILDREN_PREFIX,
+                node.getValue().toString(),
+                node.getChildren().stream().map(
+                                child -> NaryTreeNode.toPrettyText(child, depth + 1))
+                        .collect(Collectors.joining("")));
     }
 
-    /**
-     * Gets child.
-     *
-     * @param index the index
-     * @return the child
-     */
-    public NaryTreeNode<E> getChild(final int index) {
+    @Override
+    public INaryTreeNode<E> getChild(final int index) {
         return this.children.get(index);
     }
 
-    /**
-     * Gets children.
-     *
-     * @return the children
-     */
-    public List<NaryTreeNode<E>> getChildren() {
+    @Override
+    public boolean add(INaryTreeNode<E> node) {
+        if (this.children.contains(node)) {
+            return false;
+        }
+        return this.children.add(node);
+    }
+
+    @Override
+    public List<INaryTreeNode<E>> getChildren() {
         return Collections.unmodifiableList(this.children);
     }
 
-    /**
-     * Add child.
-     *
-     * @param child the child
-     */
-    public void addChild(final NaryTreeNode<E> child) {
-        this.children.add(child);
-    }
-
-    /**
-     * Add child.
-     *
-     * @param childValue the child value
-     */
-    public void addChild(final E childValue) {
-        this.addChild(new NaryTreeNode<>(childValue));
-    }
-
-    /**
-     * Remove child.
-     *
-     * @param child the child
-     */
-    public void removeChild(final NaryTreeNode<E> child) {
-        this.children.remove(child);
-    }
-
-    /**
-     * Remove child.
-     *
-     * @param index the index
-     */
-    public void removeChild(final int index) {
-        this.children.remove(index);
-    }
-
-    /**
-     * Gets children count.
-     *
-     * @return the children count
-     */
-    public int getChildrenCount() {
-        return this.children.size();
-    }
-
-    /**
-     * Is the node a leaf.
-     *
-     * @return the boolean
-     */
+    @Override
     public boolean isLeaf() {
         return this.children.isEmpty();
     }
 
-    /**
-     * Generate text string.
-     *
-     * @return the string
-     */
-    public String generateText() {
-        if (this.isLeaf()) {
-            return NaryTreeNode.VALUE_PREFIX + (this.value == null ? NaryTreeNode.VALUE_NULL : this.value.toString()) +
-                    NaryTreeNode.VALUE_SUFFIX;
-        }
-        return NaryTreeNode.VALUE_PREFIX + (this.value == null ? NaryTreeNode.VALUE_NULL : this.value.toString()) +
-                NaryTreeNode.VALUE_SUFFIX + NaryTreeNode.VALUE_SEPARATOR
-                + this.children.stream().map(NaryTreeNode::generateText).collect(Collectors.joining(
-                NaryTreeNode.CHILDREN_SEPARATOR,
-                NaryTreeNode.CHILDREN_PREFIX, NaryTreeNode.CHILDREN_SUFFIX));
-    }
-
-    /**
-     * Contains boolean.
-     *
-     * @param value the value
-     * @return the boolean
-     */
-    public boolean contains(final E value) {
-        if (this.value.equals(value)) {
-            return true;
-        }
-        for (final NaryTreeNode<E> child : this.children) {
-            if (child.contains(value)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Gets the height of the tree.
-     *
-     * @return the height
-     */
-    public int getHeight() {
-        if (this.isLeaf() || this.children.isEmpty()) {
-            return 1;
-        }
-        return 1 + this.children.stream().mapToInt(NaryTreeNode::getHeight).max().getAsInt();
-    }
-
-    /**
-     * Gets the size of the tree.
-     *
-     * @return the size
-     */
-    public int getSize() {
-        if (this.isLeaf()) {
-            return 1;
-        }
-        return 1 + this.children.stream().mapToInt(NaryTreeNode::getSize).sum();
-    }
-
-    /**
-     * Gets the number of leaves in the tree.
-     *
-     * @return the number of leaves
-     */
-    public int getNumberOfLeaves() {
-        if (this.isLeaf()) {
-            return 1;
-        }
-        return this.children.stream().mapToInt(NaryTreeNode::getNumberOfLeaves).sum();
-    }
-
-    /**
-     * Gets the number of nodes in the tree.
-     *
-     * @return the number of nodes
-     */
-    public int getNumberOfNodes() {
-        if (this.isLeaf()) {
-            return 1;
-        }
-        return 1 + this.children.stream().mapToInt(NaryTreeNode::getNumberOfNodes).sum();
-    }
-
-    /**
-     * To json string.
-     *
-     * @return the string
-     */
-    public String toJson() {
-        if (this.isLeaf()) {
-            return "{\"value\":" + new Gson().toJson(this.value) + "}";
-        }
-        return "{\"value\":" + new Gson().toJson(this.value) + ",\"children\":[" +
-                this.children.stream().map(NaryTreeNode::toJson).collect(Collectors.joining(",")) + "]}";
-    }
-
-    /**
-     * To pretty text string.
-     *
-     * @return the string
-     */
-    public String toPrettyText() {
-        return MessageFormat.format("{0}\n{1}",
-                this.value.toString(),
-                this.children.stream().map(n -> n.toPrettyText(1)).collect(Collectors.joining("")));
-    }
-
-    private String toPrettyText(final int depth) {
-        return MessageFormat.format("{0}{1}{2}\n{3}",
-                NaryTreeNode.VALUE_PRETTY_DEPTH.repeat(depth - 1),
-                NaryTreeNode.VALUE_PRETTY_CHILDREN_PREFIX,
-                this.value.toString(),
-                this.children.stream().map(n -> n.toPrettyText(depth + 1)).collect(Collectors.joining("")));
+    @Override
+    public int getChildrenCount() {
+        return this.children.size();
     }
 
     @Override
@@ -258,67 +86,139 @@ public class NaryTreeNode<E> {
                 '}';
     }
 
-    /**
-     * Return a postfix list of all values.
-     *
-     * @return the list
-     */
+    @Override
+    public E getRoot() {
+        return this.value;
+    }
+
+    @Override
+    public boolean add(final E element) {
+        return this.add(new NaryTreeNode<>(element));
+    }
+
+    @Override
+    public boolean remove(final Object element) {
+        for (INaryTreeNode<E> child : this.children) {
+            if ((child.getValue() != null) && child.getValue().equals(element)) {
+                return this.children.remove(child);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public String generateText() {
+        if (this.isLeaf()) {
+            return NaryTreeNodeUtils.VALUE_PREFIX + (this.value == null ? NaryTreeNodeUtils.VALUE_NULL :
+                    this.value.toString()) +
+                    NaryTreeNodeUtils.VALUE_SUFFIX;
+        }
+        return NaryTreeNodeUtils.VALUE_PREFIX + (this.value == null ? NaryTreeNodeUtils.VALUE_NULL :
+                this.value.toString()) +
+                NaryTreeNodeUtils.VALUE_SUFFIX + NaryTreeNodeUtils.VALUE_SEPARATOR
+                + this.children.stream().map(INaryTree::generateText).collect(Collectors.joining(
+                NaryTreeNodeUtils.CHILDREN_SEPARATOR,
+                NaryTreeNodeUtils.CHILDREN_PREFIX, NaryTreeNodeUtils.CHILDREN_SUFFIX));
+    }
+
+    @Override
+    public boolean contains(final Object element) {
+        if (this.value == null) return element == null;
+        if (this.value.equals(element)) return true;
+        for (final INaryTree<E> child : this.children) {
+            if (child.contains(element)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int getHeight() {
+        if (this.children.isEmpty()) return 1;
+        return 1 + this.children.stream().mapToInt(INaryTree::getHeight).max().getAsInt();
+    }
+
+    @Override
+    public int size() {
+        return this.isLeaf() ? 1 : 1 + this.children.stream().mapToInt(INaryTree::size).sum();
+    }
+
+    @Override
+    public int getNumberOfLeaves() {
+        return this.isLeaf() ? 1 : this.children.stream().mapToInt(INaryTree::getNumberOfLeaves).sum();
+    }
+
+    @Override
+    public String toJson() {
+        if (this.isLeaf()) {
+            return "{\"" + NaryTreeNodeUtils.JSON_VALUE_KEY + "\":"
+                    + new Gson().toJson(this.value) + "}";
+        }
+        return "{\"" + NaryTreeNodeUtils.JSON_VALUE_KEY + "\":"
+                + new Gson().toJson(this.value) + ",\"" + NaryTreeNodeUtils.JSON_CHILDREN_KEY + "\":["
+                + this.children.stream().map(INaryTree::toJson).collect(Collectors.joining(",")) + "]}";
+    }
+
+    @Override
+    public String toPrettyText() {
+        return MessageFormat.format("{0}\n{1}",
+                this.value.toString(),
+                this.children.stream().map(node -> NaryTreeNode.toPrettyText(node, 1))
+                        .collect(Collectors.joining("")));
+    }
+
+    @Override
     public List<E> toPostfixList() {
         List<E> list = new LinkedList<>();
-        for (NaryTreeNode<E> child : this.children) {
+        for (INaryTree<E> child : this.children) {
             list.addAll(child.toPostfixList());
         }
         list.add(this.value);
         return list;
     }
 
-    /**
-     * Return a prefix list of all values.
-     *
-     * @return the list
-     */
+    @Override
     public List<E> toPrefixList() {
         List<E> list = new LinkedList<>();
         list.add(this.value);
-        for (NaryTreeNode<E> child : this.children) {
+        for (INaryTree<E> child : this.children) {
             list.addAll(child.toPrefixList());
         }
         return list;
     }
 
-    /**
-     * Return a read by width list of all values.
-     *
-     * @return the list
-     */
+    @Override
     public List<E> toByWidthList() {
         List<E> list = new LinkedList<>();
-        LinkedList<NaryTreeNode<E>> queue = new LinkedList<>();
+        LinkedList<INaryTreeNode<E>> queue = new LinkedList<>();
         queue.add(this);
         while (!queue.isEmpty()) {
-            NaryTreeNode<E> node = queue.poll();
-            list.add(node.value);
-            queue.addAll(node.children);
+            INaryTreeNode<E> node = queue.poll();
+            list.add(node.getValue());
+            queue.addAll(node.getChildren());
         }
         return list;
     }
 
-
-    /**
-     * Gets node from element.
-     *
-     * @param element the element
-     *
-     * @return the node witch has element as value
-     */
-
-    public final NaryTreeNode<E> getNodeFromElement(final E element) {
+    @Override
+    public final INaryTree<E> getNodeFromElement(final E element) {
         if (this.value == element) return this;
-        NaryTreeNode<E> result = null;
-        for (NaryTreeNode<E> child : this.children){
-            NaryTreeNode<E> response = child.getNodeFromElement(element);
+        INaryTree<E> result = null;
+        for (INaryTree<E> child : this.children) {
+            INaryTree<E> response = child.getNodeFromElement(element);
             result = (response == null) ? result : response;
         }
         return result;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return this.toByWidthList().iterator();
     }
 }
